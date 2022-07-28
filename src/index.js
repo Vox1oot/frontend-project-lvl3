@@ -1,4 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap';
+import 'bootstrap/dist/js/bootstrap.bundle';
+import app from './application.js';
+/* import 'bootstrap'; */
 
-console.log('Hello World!!');
+app();
