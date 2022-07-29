@@ -31,7 +31,12 @@ const app = () => {
 
     yupScheme.validate({ url: linkRSS }, { abortEarly: false })
       .then(({ url }) => {
-        state.url = url;
+        if (state.url !== url) {
+          state.url = url;
+          state.valid = true;
+        } else {
+          throw new Error('RSS уже существует');
+        }
       })
       .catch((err) => {
         state.valid = false;
