@@ -1,13 +1,30 @@
 /* eslint-disable no-undef */
+import i18next from 'i18next';
 import * as yup from 'yup';
 import onChange from 'on-change';
 import render from './view.js';
+import resources from './locales/index.js';
+
+yup.setLocale({
+  string: {
+    url: 'Ссылка должна быть валидным URL',
+  },
+});
 
 const yupScheme = yup.object({
-  url: yup.string().url('Ссылка должна быть валидным URL'),
+  url: yup.string().url(),
 });
 
 const app = () => {
+  const defaultLanguage = 'ru';
+
+  const i18Instance = i18next.createInstance();
+  i18Instance.init({
+    lng: defaultLanguage,
+    debug: false,
+    resources,
+  });
+
   const elements = {
     form: document.querySelector('form'),
     input: document.querySelector('form input'),
@@ -35,7 +52,7 @@ const app = () => {
           state.url = url;
           state.valid = true;
         } else {
-          throw new Error('RSS уже существует');
+          throw new Error(i18Instance.t('errors.rssExist'));
         }
       })
       .catch((err) => {

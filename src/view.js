@@ -5,7 +5,7 @@ const renderValid = (elements) => {
   input.value = '';
   input.focus();
   pTextDanger.textContent = '';
-}
+};
 
 const renderErrors = (elements, error) => {
   const { pTextDanger, input } = elements;
