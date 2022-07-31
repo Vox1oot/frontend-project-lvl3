@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import i18next from 'i18next';
+import axios from 'axios';
 import * as yup from 'yup';
 import onChange from 'on-change';
 import render from './view.js';
@@ -32,12 +33,31 @@ const app = () => {
   };
 
   // model
-  const state = onChange({
-    valid: true,
-    processState: 'filling',
-    error: null,
-    url: null,
-  }, render(elements));
+  const state = onChange(
+    {
+      valid: true,
+      processState: 'filling',
+      error: null,
+      url: null,
+      feeds: [],
+    },
+    render(elements),
+  );
+
+  const validate = (linkRSS) => yupScheme
+    .validate({ url: linkRSS }, { abortEarly: false })
+    .then(({ url }) => {
+      if (!state.feeds.includes(url)) {
+        state.feeds.push(url);
+        state.valid = true;
+        state.url = url;
+        return Promise.resolve(url);
+      }
+      throw new Error(i18Instance.t('errors.rssExist'));
+    })
+    .catch((err) => {
+      throw err;
+    });
 
   // controller
   elements.form.addEventListener('submit', (e) => {
@@ -46,14 +66,13 @@ const app = () => {
     const formData = new FormData(e.target);
     const linkRSS = formData.get(elements.input.name);
 
-    yupScheme.validate({ url: linkRSS }, { abortEarly: false })
-      .then(({ url }) => {
-        if (state.url !== url) {
-          state.url = url;
-          state.valid = true;
-        } else {
-          throw new Error(i18Instance.t('errors.rssExist'));
-        }
+    validate(linkRSS)
+      .then((url) => {
+        axios({ url })
+          .then(({ data }) => console.log(data))
+          .catch((err) => {
+            state.error = err;
+          });
       })
       .catch((err) => {
         state.valid = false;
