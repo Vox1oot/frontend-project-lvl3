@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import onChange from 'on-change';
 import render from './view.js';
 import resources from './locales/index.js';
+import parse from './parse.js';
 
 yup.setLocale({
   string: {
@@ -68,10 +69,15 @@ const app = () => {
 
     validate(linkRSS)
       .then((url) => {
-        axios({ url })
-          .then(({ data }) => console.log(data))
+        axios({
+          url: `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`,
+        })
+          .then((responce) => {
+            parse(responce);
+          })
           .catch((err) => {
-            state.error = err;
+            state.error = i18Instance.t('errors.network');
+            throw err;
           });
       })
       .catch((err) => {
