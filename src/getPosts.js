@@ -6,9 +6,10 @@ export default (html, id) => {
     .reduce((acc, item) => {
       const title = item.querySelector('title').textContent.trim();
       const description = item.querySelector('description').textContent.trim();
-      const url = item.querySelector('link').nextSibling.textContent.trim()
+      const url = item.querySelector('link').textContent.trim()
 
       const post = { title, description, url };
+      console.log(post);
       acc.feedPosts.push(post);
 
       return acc;
