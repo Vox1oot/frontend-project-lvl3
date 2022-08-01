@@ -33,23 +33,23 @@ const app = () => {
     form: document.querySelector('form'),
     input: document.querySelector('form input'),
     pTextDanger: document.querySelector('p.text-danger'),
-    containerPosts: document.querySelector('container-xxl posts'),
-    containerFeeds: document.querySelector('container-xxl feeds'),
+    containerPosts: document.querySelector('div.posts'),
+    containerFeeds: document.querySelector('div.feeds'),
   };
 
-  // model
-  const state = onChange(
-    {
-      valid: null,
-      processState: 'filling',
-      error: null,
-      channels: {
-        feeds: [],
-        posts: [],
-      }
-    },
-    render(elements),
-  );
+  console.log(elements);
+
+const state = {
+  valid: false,
+  processState: 'filling',
+  error: null,
+  channels: {
+    feeds: [],
+    posts: [],
+  }
+};
+
+const watchedObject = render(state, elements); 
 
   const validate = (linkRSS) => yupScheme
     .validate({ url: linkRSS }, { abortEarly: false })
@@ -57,12 +57,13 @@ const app = () => {
       const isFind = state.channels.feeds.find((feed) => feed.url === url) ? true : false;
 
       if (!isFind) {
-        state.valid = true;
+        watchedObject.valid = true;
         return Promise.resolve(url);
       }
       throw new Error(i18Instance.t('errors.rssExist'));
     })
     .catch((err) => {
+      state.error = null;
       throw err;
     });
 
@@ -80,22 +81,20 @@ const app = () => {
         })
           .then((responce) => {
             const HTMLdocument = parse(responce);
-            /* console.log(HTMLdocument); */
             const feed = getFeed(HTMLdocument, url);
             const posts = getPosts(HTMLdocument, feed.id);
 
-            state.channels.feeds.push(feed);
-            state.channels.posts.push(posts);
-
+            watchedObject.channels.feeds.push(feed);
+            watchedObject.channels.posts.push(posts);
           })
           .catch((err) => {
-            state.error = i18Instance.t('errors.network');
+            watchedObject.error = i18Instance.t('errors.network');
             throw err;
           });
       })
       .catch((err) => {
-        state.valid = false;
-        state.error = err.message;
+        watchedObject.valid = false;
+        watchedObject.error = err.message;
       });
   });
 };
