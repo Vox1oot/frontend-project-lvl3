@@ -6,6 +6,8 @@ import onChange from 'on-change';
 import render from './view.js';
 import resources from './locales/index.js';
 import parse from './parse.js';
+import getFeed from './getFeed.js';
+import getPosts from './getPosts.js';
 
 yup.setLocale({
   string: {
@@ -31,16 +33,20 @@ const app = () => {
     form: document.querySelector('form'),
     input: document.querySelector('form input'),
     pTextDanger: document.querySelector('p.text-danger'),
+    containerPosts: document.querySelector('container-xxl posts'),
+    containerFeeds: document.querySelector('container-xxl feeds'),
   };
 
   // model
   const state = onChange(
     {
-      valid: true,
+      valid: null,
       processState: 'filling',
       error: null,
-      url: null,
-      feeds: [],
+      channels: {
+        feeds: [],
+        posts: [],
+      }
     },
     render(elements),
   );
@@ -48,10 +54,10 @@ const app = () => {
   const validate = (linkRSS) => yupScheme
     .validate({ url: linkRSS }, { abortEarly: false })
     .then(({ url }) => {
-      if (!state.feeds.includes(url)) {
-        state.feeds.push(url);
+      const isFind = state.channels.feeds.find((feed) => feed.url === url) ? true : false;
+
+      if (!isFind) {
         state.valid = true;
-        state.url = url;
         return Promise.resolve(url);
       }
       throw new Error(i18Instance.t('errors.rssExist'));
@@ -73,7 +79,14 @@ const app = () => {
           url: `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`,
         })
           .then((responce) => {
-            parse(responce);
+            const HTMLdocument = parse(responce);
+            /* console.log(HTMLdocument); */
+            const feed = getFeed(HTMLdocument, url);
+            const posts = getPosts(HTMLdocument, feed.id);
+
+            state.channels.feeds.push(feed);
+            state.channels.posts.push(posts);
+
           })
           .catch((err) => {
             state.error = i18Instance.t('errors.network');

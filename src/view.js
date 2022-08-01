@@ -18,7 +18,7 @@ const render = (elements) => (path, currentValue) => {
     case 'error':
       renderErrors(elements, currentValue);
       break;
-    case 'url':
+    case 'valid':
       renderValid(elements);
       break;
     default:

@@ -1,3 +1,5 @@
+/* global DOMparser */
+
 plugins:
   - jest
 env:
