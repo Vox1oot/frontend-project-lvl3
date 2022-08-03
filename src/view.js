@@ -13,7 +13,22 @@ const renderValid = (elements) => {
 const renderErrors = (elements, error) => {
   const { pTextDanger, input } = elements;
   input.classList.add('is-invalid');
+
+  if (pTextDanger.classList.contains('text-success')) {
+    pTextDanger.classList.remove('text-success');
+    pTextDanger.classList.add('text-danger');
+  }
+
   pTextDanger.textContent = error;
+};
+
+const renderSuccess = (elements, i18Instance) => {
+  const { pTextDanger } = elements;
+  pTextDanger.classList.remove('text-danger');
+  pTextDanger.classList.add('text-success');
+  pTextDanger.textContent = i18Instance.t('success');
+
+  renderValid(elements);
 };
 
 const htmlStructure = (name, lists) => {
@@ -96,7 +111,9 @@ const render = (state, elements, i18Instance) => {
   const watchedObject = onChange(state, (path, currentValue) => {
     switch (path) {
       case 'error':
-        renderErrors(htmlElements, currentValue);
+        if (state.error !== null) {
+          renderErrors(htmlElements, currentValue);
+        }
         break;
       case 'valid':
         if (state.valid) {
@@ -112,6 +129,9 @@ const render = (state, elements, i18Instance) => {
       case 'processState':
         if (state.processState === 'SENDING') {
           htmlElements.button.disabled = true;
+        } else if (state.processState === 'SUCCESSFULLY') {
+          htmlElements.button.disabled = false;
+          renderSuccess(elements, i18Instance);
         } else {
           htmlElements.button.disabled = false;
         }

@@ -1,5 +1,6 @@
 export default {
   translation: {
+    success: 'RSS успешно загружен',
     errors: {
       RSSExist: 'RSS уже существует',
       AxiosError: 'Ошибка сети',

@@ -54,7 +54,7 @@ const app = () => {
       const isFind = state.channels.feeds.find((feed) => feed.url === url);
 
       if (isFind === undefined) {
-        watchedObject.valid = true;
+        /* watchedObject.valid = true; */
         return Promise.resolve(url);
       }
 
@@ -71,13 +71,15 @@ const app = () => {
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    console.log(state.processState);
+
     const formData = new FormData(e.target);
     const linkRSS = formData.get(elements.input.name);
 
     validate(linkRSS)
       .then((url) => {
         watchedObject.processState = 'SENDING';
-        watchedObject.valid = false; // ?
+        watchedObject.valid = true;
 
         axios({
           url: `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`,
@@ -89,18 +91,20 @@ const app = () => {
 
             watchedObject.channels.feeds.push(feed);
             watchedObject.channels.posts = [...watchedObject.channels.posts, ...posts];
+            watchedObject.processState = 'SUCCESSFULLY';
           })
           .catch((err) => {
-            console.dir(err);
             watchedObject.error = i18Instance.t(`errors.${err.name}`);
+            watchedObject.error = null;
+            watchedObject.processState = 'FILLING';
             throw err;
           });
-        watchedObject.processState = 'SENDED';
       })
       .catch((err) => {
         watchedObject.valid = false;
         watchedObject.error = i18Instance.t(`errors.${err.name}`);
       });
+    watchedObject.processState = 'FILLING';
   });
 };
 
