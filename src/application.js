@@ -1,8 +1,6 @@
-/* eslint-disable no-undef */
 import i18next from 'i18next';
 import axios from 'axios';
 import * as yup from 'yup';
-import onChange from 'on-change';
 import render from './view.js';
 import resources from './locales/index.js';
 import parse from './parse.js';
@@ -32,35 +30,37 @@ const app = () => {
   const elements = {
     form: document.querySelector('form'),
     input: document.querySelector('form input'),
+    button: document.querySelector('[type="submit"]'),
     pTextDanger: document.querySelector('p.text-danger'),
     containerPosts: document.querySelector('div.posts'),
     containerFeeds: document.querySelector('div.feeds'),
   };
 
-  console.log(elements);
+  const state = {
+    valid: false,
+    processState: 'FILLING',
+    error: null,
+    channels: {
+      feeds: [],
+      posts: [],
+    },
+  };
 
-const state = {
-  valid: false,
-  processState: 'filling',
-  error: null,
-  channels: {
-    feeds: [],
-    posts: [],
-  }
-};
-
-const watchedObject = render(state, elements); 
+  const watchedObject = render(state, elements, i18Instance);
 
   const validate = (linkRSS) => yupScheme
     .validate({ url: linkRSS }, { abortEarly: false })
     .then(({ url }) => {
-      const isFind = state.channels.feeds.find((feed) => feed.url === url) ? true : false;
+      const isFind = state.channels.feeds.find((feed) => feed.url === url);
 
-      if (!isFind) {
+      if (isFind === undefined) {
         watchedObject.valid = true;
         return Promise.resolve(url);
       }
-      throw new Error(i18Instance.t('errors.rssExist'));
+
+      const err = new Error();
+      err.name = 'RSSExist';
+      throw err;
     })
     .catch((err) => {
       state.error = null;
@@ -76,6 +76,9 @@ const watchedObject = render(state, elements);
 
     validate(linkRSS)
       .then((url) => {
+        watchedObject.processState = 'SENDING';
+        watchedObject.valid = false; // ?
+
         axios({
           url: `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`,
         })
@@ -85,16 +88,18 @@ const watchedObject = render(state, elements);
             const posts = getPosts(HTMLdocument, feed.id);
 
             watchedObject.channels.feeds.push(feed);
-            watchedObject.channels.posts.push(posts);
+            watchedObject.channels.posts = [...watchedObject.channels.posts, ...posts];
           })
           .catch((err) => {
-            watchedObject.error = i18Instance.t('errors.network');
+            console.dir(err);
+            watchedObject.error = i18Instance.t(`errors.${err.name}`);
             throw err;
           });
+        watchedObject.processState = 'SENDED';
       })
       .catch((err) => {
         watchedObject.valid = false;
-        watchedObject.error = err.message;
+        watchedObject.error = i18Instance.t(`errors.${err.name}`);
       });
   });
 };

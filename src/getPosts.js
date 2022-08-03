@@ -8,12 +8,9 @@ export default (html, id) => {
       const description = item.querySelector('description').textContent.trim();
       const url = item.querySelector('link').textContent.trim()
 
-      const post = { title, description, url };
-      console.log(post);
-      acc.feedPosts.push(post);
-
+      const post = { feedID: id, title, description, url };
+      acc = [...acc, post];
       return acc;
-    }, { feedID: id, feedPosts: [] });
-  
+    }, []);
   return posts;
 };

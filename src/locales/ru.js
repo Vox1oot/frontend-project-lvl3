@@ -1,8 +1,14 @@
 export default {
   translation: {
     errors: {
-      rssExist: 'RSS уже существует',
-      network: 'Проблема сети. Проверьте подключение',
+      RSSExist: 'RSS уже существует',
+      AxiosError: 'Ошибка сети',
+      ValidationError: 'Ссылка должна быть валидным URL',
+      RSSError: 'Ресурс не содержит валидный RSS',
     },
+    titles: {
+      feeds: 'Фиды',
+      posts: 'Посты',
+    }
   },
 };
