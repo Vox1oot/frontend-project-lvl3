@@ -6,11 +6,13 @@ export default (html, id) => {
     .reduce((acc, item) => {
       const title = item.querySelector('title').textContent.trim();
       const description = item.querySelector('description').textContent.trim();
-      const url = item.querySelector('link').textContent.trim()
+      const url = item.querySelector('link').textContent.trim();
 
-      const post = { feedID: id, title, description, url };
-      acc = [...acc, post];
-      return acc;
+      const post = {
+        feedID: id, title, description, url,
+      };
+
+      return [...acc, post];
     }, []);
   return posts;
 };

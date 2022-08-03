@@ -9,6 +9,6 @@ export default {
     titles: {
       feeds: 'Фиды',
       posts: 'Посты',
-    }
+    },
   },
 };

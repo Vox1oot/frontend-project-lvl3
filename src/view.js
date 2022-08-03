@@ -59,13 +59,12 @@ const renderFeeds = (elements, feeds, i18Instance) => {
 
 const renderPosts = (elements, posts, i18Instance) => {
   // можно реализовать вывод толлько определенных постов по ID Фида
-  /* const commonPosts = posts.flatMap(({ feedPosts }) => feedPosts.map((post) => post)); */
-
-    const lists = posts.map((post) => {
-      const li = document.createElement('li');
-      li.classList.add('list-group-item', 
-      'border-0', 
-      'border-end-0', 
+  const lists = posts.map((post) => {
+    const li = document.createElement('li');
+    li.classList.add(
+      'list-group-item',
+      'border-0',
+      'border-end-0',
       'd-flex',
       'justify-content-between',
       'align-items-start',
@@ -92,26 +91,31 @@ const renderPosts = (elements, posts, i18Instance) => {
 };
 
 const render = (state, elements, i18Instance) => {
+  const htmlElements = elements;
+
   const watchedObject = onChange(state, (path, currentValue) => {
     switch (path) {
       case 'error':
-        renderErrors(elements, currentValue);
+        renderErrors(htmlElements, currentValue);
         break;
       case 'valid':
         if (state.valid) {
-          renderValid(elements);
+          renderValid(htmlElements);
         }
         break;
       case 'channels.feeds':
-        renderFeeds(elements, state.channels.feeds, i18Instance);
+        renderFeeds(htmlElements, state.channels.feeds, i18Instance);
         break;
       case 'channels.posts':
-        renderPosts(elements, state.channels.posts, i18Instance);
+        renderPosts(htmlElements, state.channels.posts, i18Instance);
         break;
       case 'processState':
-        state.processState === 'SENDING' 
-          ? elements.button.disabled = true 
-          : elements.button.disabled = false;  
+        if (state.processState === 'SENDING') {
+          htmlElements.button.disabled = true;
+        } else {
+          htmlElements.button.disabled = false;
+        }
+        break;
       default:
         break;
     }
