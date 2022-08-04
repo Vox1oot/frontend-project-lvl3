@@ -1,3 +1,5 @@
+import uniqueId from 'lodash/uniqueId.js';
+
 export default (html, id) => {
   const items = html.querySelectorAll('item');
 
@@ -9,7 +11,7 @@ export default (html, id) => {
       const url = item.querySelector('link').textContent.trim();
 
       const post = {
-        feedID: id, title, description, url,
+        id: uniqueId(), feedID: id, title, description, url,
       };
 
       return [...acc, post];

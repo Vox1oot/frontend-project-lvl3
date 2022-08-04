@@ -1,15 +1,5 @@
 import onChange from 'on-change';
 
-// view
-const renderValid = (elements) => {
-  const { pTextDanger, input } = elements;
-  input.classList.remove('is-invalid');
-  input.value = '';
-  input.focus();
-
-  pTextDanger.textContent = '';
-};
-
 const renderErrors = (elements, error) => {
   const { pTextDanger, input } = elements;
   input.classList.add('is-invalid');
@@ -23,12 +13,15 @@ const renderErrors = (elements, error) => {
 };
 
 const renderSuccess = (elements, i18Instance) => {
-  const { pTextDanger } = elements;
+  const { pTextDanger, input } = elements;
+  input.classList.remove('is-invalid');
+  input.value = '';
+
   pTextDanger.classList.remove('text-danger');
   pTextDanger.classList.add('text-success');
   pTextDanger.textContent = i18Instance.t('success');
 
-  renderValid(elements);
+  input.focus();
 };
 
 const htmlStructure = (name, lists) => {
@@ -73,7 +66,6 @@ const renderFeeds = (elements, feeds, i18Instance) => {
 };
 
 const renderPosts = (elements, posts, i18Instance) => {
-  // можно реализовать вывод толлько определенных постов по ID Фида
   const lists = posts.map((post) => {
     const li = document.createElement('li');
     li.classList.add(
@@ -94,6 +86,7 @@ const renderPosts = (elements, posts, i18Instance) => {
 
     const button = document.createElement('button');
     button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    button.setAttribute('data-id', post.id);
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
     button.textContent = 'Просмотр';
@@ -103,6 +96,15 @@ const renderPosts = (elements, posts, i18Instance) => {
   });
 
   elements.containerPosts.replaceChildren(htmlStructure(i18Instance.t('titles.posts'), lists));
+};
+
+const renderModal = (posts, modalID, htmlElements) => {
+  const [post] = posts.filter(({ id }) => modalID === id);
+
+  const { modal } = htmlElements;
+  modal.title.textContent = post.title;
+  modal.body.textContent = post.description;
+  modal.footer.firstElementChild.href = post.url;
 };
 
 const render = (state, elements, i18Instance) => {
@@ -115,11 +117,6 @@ const render = (state, elements, i18Instance) => {
           renderErrors(htmlElements, currentValue);
         }
         break;
-      case 'valid':
-        if (state.valid) {
-          renderValid(htmlElements);
-        }
-        break;
       case 'channels.feeds':
         renderFeeds(htmlElements, state.channels.feeds, i18Instance);
         break;
@@ -129,12 +126,18 @@ const render = (state, elements, i18Instance) => {
       case 'processState':
         if (state.processState === 'SENDING') {
           htmlElements.button.disabled = true;
-        } else if (state.processState === 'SUCCESSFULLY') {
-          htmlElements.button.disabled = false;
-          renderSuccess(elements, i18Instance);
-        } else {
-          htmlElements.button.disabled = false;
+          htmlElements.input.disabled = true;
         }
+
+        if (state.processState === 'SUCCESSFULLY') {
+          renderSuccess(htmlElements, i18Instance);
+        }
+
+        htmlElements.button.disabled = false;
+        htmlElements.input.disabled = false;
+        break;
+      case 'modalID':
+        renderModal(state.channels.posts, currentValue, htmlElements);
         break;
       default:
         break;

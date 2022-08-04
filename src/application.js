@@ -6,6 +6,7 @@ import resources from './locales/index.js';
 import parse from './parse.js';
 import getFeed from './getFeed.js';
 import getPosts from './getPosts.js';
+import btnController from './btnController.js';
 
 yup.setLocale({
   string: {
@@ -34,6 +35,11 @@ const app = () => {
     pTextDanger: document.querySelector('p.text-danger'),
     containerPosts: document.querySelector('div.posts'),
     containerFeeds: document.querySelector('div.feeds'),
+    modal: {
+      title: document.querySelector('.modal-title'),
+      body: document.querySelector('.modal-body'),
+      footer: document.querySelector('.modal-footer'),
+    },
   };
 
   const state = {
@@ -44,6 +50,7 @@ const app = () => {
       feeds: [],
       posts: [],
     },
+    modalID: null,
   };
 
   const watchedObject = render(state, elements, i18Instance);
@@ -71,8 +78,6 @@ const app = () => {
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    console.log(state.processState);
-
     const formData = new FormData(e.target);
     const linkRSS = formData.get(elements.input.name);
 
@@ -92,6 +97,9 @@ const app = () => {
             watchedObject.channels.feeds.push(feed);
             watchedObject.channels.posts = [...watchedObject.channels.posts, ...posts];
             watchedObject.processState = 'SUCCESSFULLY';
+
+            const buttons = elements.containerPosts.querySelectorAll('button');
+            btnController(buttons, watchedObject);
           })
           .catch((err) => {
             watchedObject.error = i18Instance.t(`errors.${err.name}`);
