@@ -61,7 +61,6 @@ const app = () => {
       const isFind = state.channels.feeds.find((feed) => feed.url === url);
 
       if (isFind === undefined) {
-        /* watchedObject.valid = true; */
         return Promise.resolve(url);
       }
 

@@ -98,7 +98,7 @@ const renderPosts = (elements, posts, i18Instance) => {
   elements.containerPosts.replaceChildren(htmlStructure(i18Instance.t('titles.posts'), lists));
 };
 
-const renderModal = (posts, modalID, htmlElements) => {
+const renderModal = (htmlElements, posts, modalID) => {
   const [post] = posts.filter(({ id }) => modalID === id);
 
   const { modal } = htmlElements;
@@ -137,7 +137,7 @@ const render = (state, elements, i18Instance) => {
         htmlElements.input.disabled = false;
         break;
       case 'modalID':
-        renderModal(state.channels.posts, currentValue, htmlElements);
+        renderModal(htmlElements, state.channels.posts, currentValue);
         break;
       default:
         break;
