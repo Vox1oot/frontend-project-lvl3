@@ -11,5 +11,6 @@ export default {
       feeds: 'Фиды',
       posts: 'Посты',
     },
+    button: 'Читать полностью',
   },
 };

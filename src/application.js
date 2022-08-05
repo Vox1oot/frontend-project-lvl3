@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import axios from 'axios';
-import * as yup from 'yup';
+import validate from './validate.js';
 import render from './view.js';
 import resources from './locales/index.js';
 import parse from './parse.js';
@@ -8,39 +8,30 @@ import getFeed from './getFeed.js';
 import getPosts from './getPosts.js';
 import btnController from './btnController.js';
 
-yup.setLocale({
-  string: {
-    url: 'Ссылка должна быть валидным URL',
-  },
-});
+const getNewPosts = (coll1, coll2) => coll1
+  .filter(({ title: title1 }) => !coll2.some(({ title: title2 }) => title1 === title2));
 
-const yupScheme = yup.object({
-  url: yup.string().url(),
-});
+const update = ({ id, url }, posts, watchedObject) => {
+  const watcher = watchedObject;
 
-const app = () => {
-  const defaultLanguage = 'ru';
+  setTimeout(() => {
+    axios(url)
+      .then((responce) => {
+        const updatedPosts = getPosts(parse(responce), id);
+        const newPosts = getNewPosts(updatedPosts, posts);
+        watcher.channels.posts = [...watchedObject.channels.posts, ...newPosts];
+      });
+    update({ id, url }, posts, watchedObject); // рекурсия
+  }, 5000);
+};
 
+const app = (elements) => {
   const i18Instance = i18next.createInstance();
   i18Instance.init({
-    lng: defaultLanguage,
+    lng: 'ru',
     debug: false,
     resources,
   });
-
-  const elements = {
-    form: document.querySelector('form'),
-    input: document.querySelector('form input'),
-    button: document.querySelector('[type="submit"]'),
-    pTextDanger: document.querySelector('p.text-danger'),
-    containerPosts: document.querySelector('div.posts'),
-    containerFeeds: document.querySelector('div.feeds'),
-    modal: {
-      title: document.querySelector('.modal-title'),
-      body: document.querySelector('.modal-body'),
-      footer: document.querySelector('.modal-footer'),
-    },
-  };
 
   const state = {
     valid: false,
@@ -55,24 +46,6 @@ const app = () => {
 
   const watchedObject = render(state, elements, i18Instance);
 
-  const validate = (linkRSS) => yupScheme
-    .validate({ url: linkRSS }, { abortEarly: false })
-    .then(({ url }) => {
-      const isFind = state.channels.feeds.find((feed) => feed.url === url);
-
-      if (isFind === undefined) {
-        return Promise.resolve(url);
-      }
-
-      const err = new Error();
-      err.name = 'RSSExist';
-      throw err;
-    })
-    .catch((err) => {
-      state.error = null;
-      throw err;
-    });
-
   // controller
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -80,14 +53,12 @@ const app = () => {
     const formData = new FormData(e.target);
     const linkRSS = formData.get(elements.input.name);
 
-    validate(linkRSS)
+    validate(linkRSS, state)
       .then((url) => {
         watchedObject.processState = 'SENDING';
         watchedObject.valid = true;
-
-        axios({
-          url: `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`,
-        })
+        const allOrigin = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
+        axios({ url: allOrigin })
           .then((responce) => {
             const HTMLdocument = parse(responce);
             const feed = getFeed(HTMLdocument, url);
@@ -99,6 +70,10 @@ const app = () => {
 
             const buttons = elements.containerPosts.querySelectorAll('button');
             btnController(buttons, watchedObject);
+            return Promise.resolve({ url: allOrigin, id: feed.id }); // for update
+          })
+          .then((response) => {
+            update(response, state.channels.posts, watchedObject);
           })
           .catch((err) => {
             watchedObject.error = i18Instance.t(`errors.${err.name}`);

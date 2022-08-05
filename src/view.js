@@ -89,8 +89,7 @@ const renderPosts = (elements, posts, i18Instance) => {
     button.setAttribute('data-id', post.id);
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
-    button.textContent = 'Просмотр';
-
+    button.textContent = i18Instance.t('button');
     li.replaceChildren(a, button);
     return li;
   });
@@ -128,11 +127,9 @@ const render = (state, elements, i18Instance) => {
           htmlElements.button.disabled = true;
           htmlElements.input.disabled = true;
         }
-
         if (state.processState === 'SUCCESSFULLY') {
           renderSuccess(htmlElements, i18Instance);
         }
-
         htmlElements.button.disabled = false;
         htmlElements.input.disabled = false;
         break;
