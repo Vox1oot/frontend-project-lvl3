@@ -8,20 +8,28 @@ import getFeed from './getFeed.js';
 import getPosts from './getPosts.js';
 import btnController from './btnController.js';
 
+const getButtons = (elements) => elements.containerPosts.querySelectorAll('button');
+
 const getNewPosts = (coll1, coll2) => coll1
   .filter(({ title: title1 }) => !coll2.some(({ title: title2 }) => title1 === title2));
 
-const update = ({ id, url }, posts, watchedObject) => {
+const update = ({ id, url }, state, watchedObject, elements) => {
+  const currentPosts = state.channels.posts;
   const watcher = watchedObject;
 
   setTimeout(() => {
     axios(url)
       .then((responce) => {
         const updatedPosts = getPosts(parse(responce), id);
-        const newPosts = getNewPosts(updatedPosts, posts);
-        watcher.channels.posts = [...watchedObject.channels.posts, ...newPosts];
+        const newPosts = getNewPosts(updatedPosts, currentPosts);
+
+        if (newPosts.length !== 0) {
+          watcher.channels.posts.push(...newPosts);
+        }
+
+        btnController(getButtons(elements), watchedObject);
+        update({ id, url }, state, watchedObject, elements); // рекурсия
       });
-    update({ id, url }, posts, watchedObject); // рекурсия
   }, 5000);
 };
 
@@ -68,12 +76,11 @@ const app = (elements) => {
             watchedObject.channels.posts = [...watchedObject.channels.posts, ...posts];
             watchedObject.processState = 'SUCCESSFULLY';
 
-            const buttons = elements.containerPosts.querySelectorAll('button');
-            btnController(buttons, watchedObject);
+            btnController(getButtons(elements), watchedObject);
             return Promise.resolve({ url: allOrigin, id: feed.id }); // for update
           })
           .then((response) => {
-            update(response, state.channels.posts, watchedObject);
+            update(response, state, watchedObject, elements);
           })
           .catch((err) => {
             watchedObject.error = i18Instance.t(`errors.${err.name}`);
