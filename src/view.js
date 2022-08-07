@@ -65,6 +65,17 @@ const renderFeeds = (elements, feeds, i18Instance) => {
   elements.containerFeeds.replaceChildren(htmlStructure(i18Instance.t('titles.feeds'), lists));
 };
 
+const createButton = (post, i18Instance) => {
+  const button = document.createElement('button');
+  button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+  button.setAttribute('type', 'button');
+  button.setAttribute('data-id', post.id);
+  button.setAttribute('data-bs-toggle', 'modal');
+  button.setAttribute('data-bs-target', '#modal');
+  button.textContent = i18Instance.t('button');
+  return button;
+};
+
 const renderPosts = (elements, posts, i18Instance) => {
   const lists = posts.map((post) => {
     const li = document.createElement('li');
@@ -84,13 +95,7 @@ const renderPosts = (elements, posts, i18Instance) => {
     a.href = post.url;
     a.textContent = post.title;
 
-    const button = document.createElement('button');
-    button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-    button.setAttribute('type', 'button');
-    button.setAttribute('data-id', post.id);
-    button.setAttribute('data-bs-toggle', 'modal');
-    button.setAttribute('data-bs-target', '#modal');
-    button.textContent = i18Instance.t('button');
+    const button = createButton(post, i18Instance);
     li.replaceChildren(a, button);
     return li;
   });
