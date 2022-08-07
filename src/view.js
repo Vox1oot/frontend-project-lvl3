@@ -78,7 +78,7 @@ const renderPosts = (elements, posts, i18Instance) => {
     );
 
     const a = document.createElement('a');
-    a.classList.add('fw-bold');
+    a.classList.add(post.weight);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
     a.href = post.url;

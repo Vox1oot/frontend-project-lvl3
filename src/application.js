@@ -23,12 +23,14 @@ const update = ({ id, url }, state, watchedObject, elements) => {
         const updatedPosts = getPosts(parse(responce), id);
         const newPosts = getNewPosts(updatedPosts, currentPosts);
 
-        watcher.channels.posts.push(...newPosts);
+        if (newPosts.length !== 0) {
+          watcher.channels.posts.push(...newPosts);
+        }
 
         btnController(getButtons(elements), watchedObject);
         update({ id, url }, state, watchedObject, elements); // рекурсия
       });
-  }, 10000);
+  }, 5000);
 };
 
 const app = (elements) => {
