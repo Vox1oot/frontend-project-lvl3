@@ -112,6 +112,26 @@ const renderModal = (htmlElements, posts, modalID) => {
   modal.footer.firstElementChild.href = post.url;
 };
 
+const renderProcessing = (elements, currentValue, i18Instance) => {
+  const { button, input } = elements;
+
+  if (currentValue === 'SENDING') {
+    button.disabled = true;
+    input.disabled = true;
+  }
+
+  if (currentValue === 'SUCCESSFULLY') {
+    renderSuccess(elements, i18Instance);
+    button.disabled = false;
+    input.disabled = false;
+  }
+
+  if (currentValue === 'FILLING') {
+    button.disabled = false;
+    input.disabled = false;
+  }
+};
+
 const render = (state, elements, i18Instance) => {
   const htmlElements = elements;
 
@@ -129,21 +149,7 @@ const render = (state, elements, i18Instance) => {
         renderPosts(htmlElements, state.channels.posts, i18Instance);
         break;
       case 'processState':
-        if (currentValue === 'SENDING') {
-          htmlElements.button.disabled = true;
-          htmlElements.input.disabled = true;
-        }
-
-        if (currentValue === 'SUCCESSFULLY') {
-          renderSuccess(htmlElements, i18Instance);
-          htmlElements.button.disabled = false;
-          htmlElements.input.disabled = false;
-        }
-
-        if (currentValue === 'FILLING') {
-          htmlElements.button.disabled = false;
-          htmlElements.input.disabled = false;
-        }
+        renderProcessing(htmlElements, currentValue, i18Instance);
         break;
       case 'modalID':
         renderModal(htmlElements, state.channels.posts, currentValue);
