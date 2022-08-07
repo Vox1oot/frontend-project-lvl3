@@ -130,8 +130,8 @@ const render = (state, elements, i18Instance) => {
         break;
       case 'processState':
         if (currentValue === 'SENDING') {
-          htmlElements.input.setAttribute('disabled', '');
-          htmlElements.button.setAttribute('disabled', '');
+          htmlElements.button.disabled = true;
+          htmlElements.input.disabled = true;
         }
 
         if (currentValue === 'SUCCESSFULLY') {
@@ -144,8 +144,6 @@ const render = (state, elements, i18Instance) => {
           htmlElements.button.disabled = false;
           htmlElements.input.disabled = false;
         }
-/*         htmlElements.button.disabled = false;
-        htmlElements.input.disabled = false; */
         break;
       case 'modalID':
         renderModal(htmlElements, state.channels.posts, currentValue);
