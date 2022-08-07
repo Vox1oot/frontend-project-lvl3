@@ -13,20 +13,22 @@ const getButtons = (elements) => elements.containerPosts.querySelectorAll('butto
 const getNewPosts = (coll1, coll2) => coll1
   .filter(({ title: title1 }) => !coll2.some(({ title: title2 }) => title1 === title2));
 
-const update = ({ id, url }, posts, watchedObject, elements) => {
+const update = ({ id, url }, state, watchedObject, elements) => {
+  const currentPosts = state.channels.posts;
   const watcher = watchedObject;
 
   setTimeout(() => {
     axios(url)
       .then((responce) => {
         const updatedPosts = getPosts(parse(responce), id);
-        const newPosts = getNewPosts(updatedPosts, posts);
-        watcher.channels.posts = [...watchedObject.channels.posts, ...newPosts];
+        const newPosts = getNewPosts(updatedPosts, currentPosts);
+
+        watcher.channels.posts.push(...newPosts);
 
         btnController(getButtons(elements), watchedObject);
-        update({ id, url }, posts, watchedObject, elements); // рекурсия
+        update({ id, url }, state, watchedObject, elements); // рекурсия
       });
-  }, 5000);
+  }, 10000);
 };
 
 const app = (elements) => {
@@ -76,7 +78,7 @@ const app = (elements) => {
             return Promise.resolve({ url: allOrigin, id: feed.id }); // for update
           })
           .then((response) => {
-            update(response, state.channels.posts, watchedObject, elements);
+            update(response, state, watchedObject, elements);
           })
           .catch((err) => {
             watchedObject.error = i18Instance.t(`errors.${err.name}`);
