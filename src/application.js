@@ -1,12 +1,12 @@
 import i18next from 'i18next';
 import axios from 'axios';
-import validate from './validate.js';
+import validate from './utils/validate.js';
 import render from './view/index.js';
 import resources from './locales/index.js';
-import parse from './parse.js';
-import getFeed from './getFeed.js';
-import getPosts from './getPosts.js';
-import btnController from './btnController.js';
+import parse from './utils/parse.js';
+import getFeed from './utils/getFeed.js';
+import getPosts from './utils/getPosts.js';
+import btnController from './utils/btnController.js';
 
 const getButtons = (elements) => elements.containerPosts.querySelectorAll('button');
 
