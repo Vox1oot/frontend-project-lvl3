@@ -7,31 +7,8 @@ import parse from './utils/parse.js';
 import getFeed from './utils/getFeed.js';
 import getPosts from './utils/getPosts.js';
 import btnController from './utils/btnController.js';
-
-const getButtons = (elements) => elements.containerPosts.querySelectorAll('button');
-
-const getNewPosts = (coll1, coll2) => coll1
-  .filter(({ title: title1 }) => !coll2.some(({ title: title2 }) => title1 === title2));
-
-const update = ({ id, url }, state, watchedObject, elements) => {
-  const currentPosts = state.channels.posts;
-  const watcher = watchedObject;
-
-  setTimeout(() => {
-    axios(url)
-      .then((responce) => {
-        const updatedPosts = getPosts(parse(responce), id);
-        const newPosts = getNewPosts(updatedPosts, currentPosts);
-
-        if (newPosts.length !== 0) {
-          watcher.channels.posts.push(...newPosts);
-        }
-
-        btnController(getButtons(elements), watchedObject);
-        update({ id, url }, state, watchedObject, elements); // рекурсия
-      });
-  }, 5000);
-};
+import getButtons from './utils/getButtons.js';
+import update from './utils/update.js';
 
 const app = (elements) => {
   const i18Instance = i18next.createInstance();
@@ -59,9 +36,9 @@ const app = (elements) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
-    const linkRSS = formData.get(elements.input.name);
+    const inputLink = formData.get(elements.input.name);
 
-    validate(linkRSS, state)
+    validate(inputLink, state)
       .then((url) => {
         watchedObject.processState = 'SENDING';
         watchedObject.valid = true;
