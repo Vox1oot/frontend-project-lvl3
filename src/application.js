@@ -1,14 +1,8 @@
 import i18next from 'i18next';
-import axios from 'axios';
 import validate from './utils/validate.js';
 import render from './view/index.js';
 import resources from './locales/index.js';
-import parse from './utils/parse.js';
-import getFeed from './utils/getFeed.js';
-import getPosts from './utils/getPosts.js';
-import btnController from './utils/btnController.js';
-import getButtons from './utils/getButtons.js';
-import update from './utils/update.js';
+import getRequest from './utils/getRequest.js';
 
 const app = (elements) => {
   const i18Instance = i18next.createInstance();
@@ -42,29 +36,8 @@ const app = (elements) => {
       .then((url) => {
         watchedObject.processState = 'SENDING';
         watchedObject.valid = true;
-        const allOrigin = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
-        axios({ url: allOrigin })
-          .then((responce) => {
-            const HTMLdocument = parse(responce);
-            const feed = getFeed(HTMLdocument, url);
-            const posts = getPosts(HTMLdocument, feed.id);
 
-            watchedObject.channels.feeds.push(feed);
-            watchedObject.channels.posts = [...watchedObject.channels.posts, ...posts];
-            watchedObject.processState = 'SUCCESSFULLY';
-
-            btnController(getButtons(elements), watchedObject);
-            return Promise.resolve({ url: allOrigin, id: feed.id }); // for update
-          })
-          .then((response) => {
-            update(response, state, watchedObject, elements);
-          })
-          .catch((err) => {
-            watchedObject.error = i18Instance.t(`errors.${err.name}`);
-            watchedObject.error = null;
-            watchedObject.processState = 'FILLING';
-            throw err;
-          });
+        getRequest(url, watchedObject, elements, state, i18Instance);
       })
       .catch((err) => {
         watchedObject.valid = false;
