@@ -31,7 +31,10 @@ const render = (state, elements, i18Instance) => {
         break;
     }
   });
-  return watchedObject;
+  
+  //error  `watchedObject` is not a recommended name for `render` returned value
+  const view = watchedObject
+  return view;
 };
 
 export default render;
