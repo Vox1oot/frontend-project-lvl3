@@ -23,7 +23,7 @@ const app = (elements) => {
     modalID: null,
   };
 
-  const watchedObject = render(state, elements, i18Instance);
+  const view = render(state, elements, i18Instance);
 
   // controller
   elements.form.addEventListener('submit', (e) => {
@@ -34,16 +34,16 @@ const app = (elements) => {
 
     validate(inputLink, state)
       .then((url) => {
-        watchedObject.processState = 'SENDING';
-        watchedObject.valid = true;
+        view.processState = 'SENDING';
+        view.valid = true;
 
-        getRequest(url, watchedObject, elements, state, i18Instance);
+        getRequest(url, view, elements, state, i18Instance);
       })
       .catch((err) => {
-        watchedObject.valid = false;
-        watchedObject.error = i18Instance.t(`errors.${err.name}`);
+        view.valid = false;
+        view.error = i18Instance.t(`errors.${err.name}`);
       });
-    watchedObject.processState = 'FILLING';
+    view.processState = 'FILLING';
   });
 };
 
