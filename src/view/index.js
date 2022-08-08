@@ -8,7 +8,7 @@ import renderProcessing from './renderProcessing.js';
 const render = (state, elements, i18Instance) => {
   const htmlElements = elements;
 
-  const watcher = onChange(state, (path, currentValue) => {
+  const view = onChange(state, (path, currentValue) => {
     switch (path) {
       case 'error':
         if (state.error !== null) {
@@ -31,7 +31,7 @@ const render = (state, elements, i18Instance) => {
         break;
     }
   });
-  return watcher;
+  return view;
 };
 
 export default render;
