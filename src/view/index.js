@@ -8,7 +8,7 @@ import renderProcessing from './renderProcessing.js';
 const render = (state, elements, i18Instance) => {
   const htmlElements = elements;
 
-  const watchedObject = onChange(state, (path, currentValue) => {
+  const watcher = onChange(state, (path, currentValue) => {
     switch (path) {
       case 'error':
         if (state.error !== null) {
@@ -31,10 +31,7 @@ const render = (state, elements, i18Instance) => {
         break;
     }
   });
-  
-  //error  `watchedObject` is not a recommended name for `render` returned value
-  const view = watchedObject
-  return view;
+  return watcher;
 };
 
 export default render;
