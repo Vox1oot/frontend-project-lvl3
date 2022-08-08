@@ -31,7 +31,7 @@ const render = (state, elements, i18Instance) => {
         break;
     }
   });
-  return watcher
+  return watcher;
 };
 
 export default render;
