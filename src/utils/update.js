@@ -1,8 +1,6 @@
 import axios from 'axios';
 import getPosts from './getPosts.js';
 import parse from './parse.js';
-import btnController from './btnController.js';
-import getButtons from './getButtons.js';
 
 const getNewPosts = (coll1, coll2) => coll1
   .filter(({ title: title1 }) => !coll2.some(({ title: title2 }) => title1 === title2));
@@ -21,7 +19,6 @@ const update = ({ id, url }, state, watchedObject, elements) => {
           watcher.channels.posts.push(...newPosts);
         }
 
-        btnController(getButtons(elements), watchedObject);
         update({ id, url }, state, watchedObject, elements); // рекурсия
       });
   }, 5000);

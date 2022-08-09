@@ -3,9 +3,9 @@ export default (elements, i18Instance) => {
   input.classList.remove('is-invalid');
   input.value = '';
 
-  pTextInfo.classList.remove('text-danger', 'text-info');
-  pTextInfo.classList.add('text-success');
-  pTextInfo.textContent = i18Instance.t('success');
+  pTextInfo.classList.toggle('text-danger', false);
+  pTextInfo.classList.add('text-info');
+  pTextInfo.textContent = i18Instance.t('downloading');
 
   input.focus();
 };

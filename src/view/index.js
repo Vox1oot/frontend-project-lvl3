@@ -4,6 +4,7 @@ import renderFeeds from './renderFeeds.js';
 import renderPosts from './renderPosts.js';
 import renderModal from './renderModal.js';
 import renderProcessing from './renderProcessing.js';
+import renderVisitedLink from './renderVisitedLink.js';
 
 const render = (state, elements, i18Instance) => {
   const htmlElements = elements;
@@ -26,6 +27,9 @@ const render = (state, elements, i18Instance) => {
         break;
       case 'modalID':
         renderModal(htmlElements, state.channels.posts, currentValue);
+        break;
+      case 'visitedLinksElements':
+        renderVisitedLink(currentValue);
         break;
       default:
         break;

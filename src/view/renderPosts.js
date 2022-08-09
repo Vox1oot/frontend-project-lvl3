@@ -27,6 +27,7 @@ export default (elements, posts, i18Instance) => {
     a.classList.add(post.weight);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
+    a.setAttribute('data-id', post.id);
     a.href = post.url;
     a.textContent = post.title;
 

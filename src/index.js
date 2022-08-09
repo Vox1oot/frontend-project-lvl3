@@ -6,7 +6,7 @@ const elements = {
   form: document.querySelector('form'),
   input: document.querySelector('form input'),
   button: document.querySelector('[type="submit"]'),
-  pTextDanger: document.querySelector('p.text-danger'),
+  pTextInfo: document.querySelector('p.text-danger'),
   containerPosts: document.querySelector('div.posts'),
   containerFeeds: document.querySelector('div.feeds'),
   modal: {

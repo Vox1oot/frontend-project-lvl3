@@ -3,6 +3,7 @@ import validate from './utils/validate.js';
 import render from './view/index.js';
 import resources from './locales/index.js';
 import getRequest from './utils/getRequest.js';
+import postsController from './controllers/postsController.js';
 
 const app = (elements) => {
   const i18Instance = i18next.createInstance();
@@ -21,6 +22,7 @@ const app = (elements) => {
       posts: [],
     },
     modalID: null,
+    visitedLinksElements: new Map(),
   };
 
   const view = render(state, elements, i18Instance);
@@ -34,8 +36,8 @@ const app = (elements) => {
 
     validate(inputLink, state)
       .then((url) => {
-        view.processState = 'SENDING';
         view.valid = true;
+        view.processState = 'SENDING';
 
         getRequest(url, view, elements, state, i18Instance);
       })
@@ -45,6 +47,8 @@ const app = (elements) => {
       });
     view.processState = 'FILLING';
   });
+
+  postsController(elements, view);
 };
 
 export default app;

@@ -1,9 +1,11 @@
 import renderSuccess from './renderSuccess.js';
+import renderDownloading from './renderDownloading.js';
 
 export default (elements, currentValue, i18Instance) => {
   const { button, input } = elements;
 
   if (currentValue === 'SENDING') {
+    renderDownloading(elements, i18Instance);
     button.disabled = true;
     input.disabled = true;
   }

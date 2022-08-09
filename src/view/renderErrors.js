@@ -1,11 +1,9 @@
 export default (elements, error) => {
-  const { pTextDanger, input } = elements;
+  const { pTextInfo, input } = elements;
   input.classList.add('is-invalid');
 
-  if (pTextDanger.classList.contains('text-success')) {
-    pTextDanger.classList.remove('text-success');
-    pTextDanger.classList.add('text-danger');
-  }
+  pTextInfo.classList.remove('text-info', 'text-success');
+  pTextInfo.classList.add('text-danger');
 
-  pTextDanger.textContent = error;
+  pTextInfo.textContent = error;
 };

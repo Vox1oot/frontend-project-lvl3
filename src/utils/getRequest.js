@@ -2,8 +2,6 @@ import axios from 'axios';
 import parse from './parse.js';
 import getFeed from './getFeed.js';
 import getPosts from './getPosts.js';
-import btnController from './btnController.js';
-import getButtons from './getButtons.js';
 import update from './update.js';
 
 export default (url, watchedObject, elements, state, i18Instance) => {
@@ -20,7 +18,6 @@ export default (url, watchedObject, elements, state, i18Instance) => {
       watcher.channels.posts = [...watcher.channels.posts, ...posts];
       watcher.processState = 'SUCCESSFULLY';
 
-      btnController(getButtons(elements), watcher);
       return Promise.resolve({ url: allOrigin, id: feed.id }); // for update
     })
     .then((response) => {
