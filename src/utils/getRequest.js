@@ -6,9 +6,13 @@ import update from './update.js';
 
 export default (url, watchedObject, elements, state, i18Instance) => {
   const watcher = watchedObject;
-  const allOrigin = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
-  axios({ url: allOrigin })
+  const currentURL = new URL('https://allorigins.hexlet.app');
+  currentURL.pathname = '/get';
+  const rssLink = encodeURIComponent(url);
+  currentURL.search = `disableCache=true&url=${rssLink}`;
+
+  axios({ url: currentURL.href })
     .then((responce) => {
       const HTMLdocument = parse(responce);
       const feed = getFeed(HTMLdocument, url);
@@ -18,7 +22,7 @@ export default (url, watchedObject, elements, state, i18Instance) => {
       watcher.channels.posts = [...watcher.channels.posts, ...posts];
       watcher.processState = 'SUCCESSFULLY';
 
-      return Promise.resolve({ url: allOrigin, id: feed.id }); // for update
+      return Promise.resolve({ url: currentURL.href, id: feed.id }); // for update
     })
     .then((response) => {
       update(response, state, watcher, elements);

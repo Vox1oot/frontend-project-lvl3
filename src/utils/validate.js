@@ -1,16 +1,18 @@
 import * as yup from 'yup';
 
-yup.setLocale({
-  string: {
-    url: 'Ссылка должна быть валидным URL',
-  },
-});
-
-const yupScheme = yup.object({
-  url: yup.string().url(),
-});
-
 export default (linkRSS, state) => {
+  yup.setLocale({
+    string: {
+      url: 'Ссылка должна быть валидным URL',
+    },
+  });
+
+  const yupScheme = yup.object({
+    url: yup.string().url(),
+  });
+
+  console.log(state.channels.feeds);
+
   const currentState = state;
 
   return yupScheme

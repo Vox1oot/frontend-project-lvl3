@@ -30,12 +30,13 @@ const app = () => {
     valid: false,
     processState: 'FILLING',
     error: null,
+    validateLinks: [],
     channels: {
       feeds: [],
       posts: [],
     },
     modalID: null,
-    visitedLinksElements: new Map(),
+    visitedLinksIDs: new Set(),
   };
 
   const view = render(state, elements, i18Instance);

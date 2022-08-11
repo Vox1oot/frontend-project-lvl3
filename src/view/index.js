@@ -28,8 +28,8 @@ const render = (state, elements, i18Instance) => {
       case 'modalID':
         renderModal(htmlElements, state.channels.posts, currentValue);
         break;
-      case 'visitedLinksElements':
-        renderVisitedLink(currentValue);
+      case 'visitedLinksIDs':
+        renderVisitedLink(currentValue, state.channels.posts);
         break;
       default:
         break;
