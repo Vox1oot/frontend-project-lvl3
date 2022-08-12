@@ -30,7 +30,6 @@ const app = () => {
     valid: false,
     processState: 'FILLING',
     error: null,
-    validateLinks: [],
     channels: {
       feeds: [],
       posts: [],

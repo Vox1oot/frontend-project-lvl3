@@ -25,9 +25,8 @@ const update = ({ url, feedID }, state, watchedObject, elements) => {
         if (newPostsFromFeed.length !== 0) {
           watchedObject.channels.posts.unshift(...newPostsFromFeed);
         }
-
-        update({ url, feedID }, state, watchedObject, elements); // рекурсия
-      });
+      })
+      .finally(update({ url, feedID }, state, watchedObject, elements));
   }, 5000);
 };
 

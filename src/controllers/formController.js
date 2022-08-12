@@ -18,7 +18,7 @@ export default (elements, state, watchedState, i18Instance) => {
       })
       .catch((err) => {
         watchedState.valid = false;
-        watchedState.error = i18Instance.t(`errors.${err.name}`);
+        watchedState.error = i18Instance.t(`errors.${err.message}`);
       });
     watchedState.processState = 'FILLING';
   });
