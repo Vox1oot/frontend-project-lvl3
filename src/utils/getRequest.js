@@ -1,7 +1,7 @@
+/* eslint-disable no-param-reassign */
+import uniqueId from 'lodash/uniqueId.js';
 import axios from 'axios';
 import parse from './parse.js';
-import getFeed from './getFeed.js';
-import getPosts from './getPosts.js';
 import update from './update.js';
 
 export default (url, watchedObject, elements, state, i18Instance) => {
@@ -14,15 +14,25 @@ export default (url, watchedObject, elements, state, i18Instance) => {
 
   axios({ url: currentURL.href })
     .then((responce) => {
-      const HTMLdocument = parse(responce);
-      const feed = getFeed(HTMLdocument, url);
-      const posts = getPosts(HTMLdocument, feed.id);
+      const dataFromParse = parse(responce);
+
+      const { feed } = dataFromParse;
+      const { posts } = dataFromParse;
+
+      feed.id = uniqueId();
+      feed.url = url;
+
+      const postsFromFeed = posts.map((post) => {
+        post.id = uniqueId();
+        post.feedID = feed.id;
+        return post;
+      });
 
       watcher.channels.feeds.push(feed);
-      watcher.channels.posts = [...watcher.channels.posts, ...posts];
+      watcher.channels.posts.unshift(...postsFromFeed);
       watcher.processState = 'SUCCESSFULLY';
 
-      return Promise.resolve({ url: currentURL.href, id: feed.id }); // for update
+      return Promise.resolve({ url: currentURL.href, feedID: feed.id }); // for update
     })
     .then((response) => {
       update(response, state, watcher, elements);

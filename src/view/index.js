@@ -20,7 +20,7 @@ const render = (state, elements, i18Instance) => {
         renderFeeds(htmlElements, state.channels.feeds, i18Instance);
         break;
       case 'channels.posts':
-        renderPosts(htmlElements, state.channels.posts, i18Instance);
+        renderPosts(htmlElements, state, i18Instance);
         break;
       case 'processState':
         renderProcessing(htmlElements, currentValue, i18Instance);

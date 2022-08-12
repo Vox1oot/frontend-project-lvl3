@@ -11,8 +11,8 @@ const createButton = (post, i18Instance) => {
   return button;
 };
 
-export default (elements, posts, i18Instance) => {
-  const lists = posts.map((post) => {
+export default (elements, state, i18Instance) => {
+  const lists = state.channels.posts.map((post) => {
     const li = document.createElement('li');
     li.classList.add(
       'list-group-item',
@@ -24,7 +24,10 @@ export default (elements, posts, i18Instance) => {
     );
 
     const a = document.createElement('a');
-    a.classList.add(post.weight);
+
+    const classForLink = state.visitedLinksIDs.has(post.id) ? 'fw-normal' : 'fw-bold';
+
+    a.classList.add(classForLink);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
     a.setAttribute('data-id', post.id);

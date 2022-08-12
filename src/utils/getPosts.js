@@ -11,7 +11,7 @@ export default (html, id) => {
       const url = item.querySelector('link').textContent.trim();
 
       const post = {
-        id: uniqueId(), feedID: id, title, description, url, weight: 'fw-bold',
+        id: uniqueId(), feedID: id, title, description, url,
       };
 
       return [...acc, post];

@@ -1,25 +1,32 @@
+/* eslint-disable no-param-reassign */
+import uniqueId from 'lodash/uniqueId.js';
 import axios from 'axios';
-import getPosts from './getPosts.js';
 import parse from './parse.js';
 
 const getNewPosts = (coll1, coll2) => coll1
   .filter(({ title: title1 }) => !coll2.some(({ title: title2 }) => title1 === title2));
 
-const update = ({ id, url }, state, watchedObject, elements) => {
+const update = ({ url, feedID }, state, watchedObject, elements) => {
   const currentPosts = state.channels.posts;
-  const watcher = watchedObject;
 
   setTimeout(() => {
     axios(url)
       .then((responce) => {
-        const updatedPosts = getPosts(parse(responce), id);
+        const dataFromParse = parse(responce);
+        const { posts: updatedPosts } = dataFromParse;
         const newPosts = getNewPosts(updatedPosts, currentPosts);
 
-        if (newPosts.length !== 0) {
-          watcher.channels.posts.push(...newPosts);
+        const newPostsFromFeed = newPosts.map((post) => {
+          post.id = uniqueId();
+          post.feedID = feedID;
+          return post;
+        });
+
+        if (newPostsFromFeed.length !== 0) {
+          watchedObject.channels.posts.unshift(...newPostsFromFeed);
         }
 
-        update({ id, url }, state, watchedObject, elements); // рекурсия
+        update({ url, feedID }, state, watchedObject, elements); // рекурсия
       });
   }, 5000);
 };
