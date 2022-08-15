@@ -6,9 +6,7 @@ import renderModal from './renderModal.js';
 import renderProcessing from './renderProcessing.js';
 import renderVisitedLink from './renderVisitedLink.js';
 
-const render = (state, elements, i18Instance) => {
-  const htmlElements = elements;
-
+const render = (state, htmlElements, i18Instance) => {
   const watcher = onChange(state, (path, currentValue) => {
     switch (path) {
       case 'error':

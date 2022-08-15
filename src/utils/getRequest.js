@@ -5,8 +5,6 @@ import parse from './parse.js';
 import update from './update.js';
 
 export default (url, watchedObject, elements, state, i18Instance) => {
-  const watcher = watchedObject;
-
   const currentURL = new URL('https://allorigins.hexlet.app');
   currentURL.pathname = '/get';
   const rssLink = encodeURIComponent(url);
@@ -28,19 +26,19 @@ export default (url, watchedObject, elements, state, i18Instance) => {
         return post;
       });
 
-      watcher.channels.feeds.push(feed);
-      watcher.channels.posts.unshift(...postsFromFeed);
-      watcher.processState = 'SUCCESSFULLY';
+      watchedObject.channels.feeds.push(feed);
+      watchedObject.channels.posts.unshift(...postsFromFeed);
+      watchedObject.processState = 'SUCCESSFULLY';
 
       return Promise.resolve({ url: currentURL.href, feedID: feed.id }); // for update
     })
     .then((response) => {
-      update(response, state, watcher, elements);
+      update(response, state, watchedObject, elements);
     })
     .catch((err) => {
-      watcher.error = i18Instance.t(`errors.${err.name}`);
-      watcher.error = null;
-      watcher.processState = 'FILLING';
+      watchedObject.error = i18Instance.t(`errors.${err.name}`);
+      watchedObject.error = null;
+      watchedObject.processState = 'FILLING';
       throw err;
     });
 };
