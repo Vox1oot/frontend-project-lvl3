@@ -11,7 +11,6 @@ const update = (state, watchedObject) => {
   const currentPosts = state.channels.posts;
   const { url, id: feedID } = state.channels.feeds[state.channels.feeds.length - 1];
 
-  console.log(currentPosts);
   setTimeout(() => {
     axios({ url: useProxyTo(url) })
       .then((responce) => {
