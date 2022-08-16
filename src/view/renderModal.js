@@ -1,5 +1,5 @@
 export default (htmlElements, posts, modalID) => {
-  const [post] = posts.filter(({ id }) => modalID === id);
+  const post = posts.find(({ id }) => modalID === id);
 
   const { modal } = htmlElements;
   modal.title.textContent = post.title;

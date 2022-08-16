@@ -4,13 +4,15 @@ import axios from 'axios';
 import parse from './parse.js';
 import update from './update.js';
 
-export default (url, watchedObject, elements, state, i18Instance) => {
-  const currentURL = new URL('https://allorigins.hexlet.app');
-  currentURL.pathname = '/get';
-  const rssLink = encodeURIComponent(url);
-  currentURL.search = `disableCache=true&url=${rssLink}`;
+const useProxyTo = (url) => {
+  const proxyURL = new URL('https://allorigins.hexlet.app/get?');
+  proxyURL.searchParams.set('disableCache', true);
+  proxyURL.searchParams.set('url', url);
+  return proxyURL.toString();
+};
 
-  axios({ url: currentURL.href })
+export default (url, watchedObject, elements, state, i18Instance) => {
+  axios({ url: useProxyTo(url) })
     .then((responce) => {
       const dataFromParse = parse(responce);
 
@@ -30,15 +32,15 @@ export default (url, watchedObject, elements, state, i18Instance) => {
       watchedObject.channels.posts.unshift(...postsFromFeed);
       watchedObject.processState = 'SUCCESSFULLY';
 
-      return Promise.resolve({ url: currentURL.href, feedID: feed.id }); // for update
+      return Promise.resolve({ url: useProxyTo(url), feedID: feed.id }); // for update
     })
     .then((response) => {
       update(response, state, watchedObject, elements);
     })
     .catch((err) => {
       watchedObject.error = i18Instance.t(`errors.${err.name}`);
-      watchedObject.error = null;
       watchedObject.processState = 'FILLING';
+      watchedObject.error = null;
       throw err;
     });
 };

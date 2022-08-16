@@ -9,6 +9,8 @@ const getNewPosts = (coll1, coll2) => coll1
 const update = ({ url, feedID }, state, watchedObject, elements) => {
   const currentPosts = state.channels.posts;
 
+  console.log(url);
+
   setTimeout(() => {
     axios(url)
       .then((responce) => {

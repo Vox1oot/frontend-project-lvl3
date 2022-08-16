@@ -7,12 +7,10 @@ import renderProcessing from './renderProcessing.js';
 import renderVisitedLink from './renderVisitedLink.js';
 
 const render = (state, htmlElements, i18Instance) => {
-  const watcher = onChange(state, (path, currentValue) => {
+  const watcher = onChange(state, (path, currentValue, prevValue) => {
     switch (path) {
       case 'error':
-        if (state.error !== null) {
-          renderErrors(htmlElements, currentValue);
-        }
+        renderErrors(htmlElements, currentValue, prevValue);
         break;
       case 'channels.feeds':
         renderFeeds(htmlElements, state.channels.feeds, i18Instance);
