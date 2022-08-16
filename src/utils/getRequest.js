@@ -2,16 +2,10 @@
 import uniqueId from 'lodash/uniqueId.js';
 import axios from 'axios';
 import parse from './parse.js';
+import useProxyTo from './useProxyTo.js';
 import update from './update.js';
 
-const useProxyTo = (url) => {
-  const proxyURL = new URL('https://allorigins.hexlet.app/get?');
-  proxyURL.searchParams.set('disableCache', true);
-  proxyURL.searchParams.set('url', url);
-  return proxyURL.toString();
-};
-
-export default (url, watchedObject, elements, state, i18Instance) => {
+export default (url, watchedObject, state, i18Instance) => {
   axios({ url: useProxyTo(url) })
     .then((responce) => {
       const dataFromParse = parse(responce);
@@ -31,11 +25,7 @@ export default (url, watchedObject, elements, state, i18Instance) => {
       watchedObject.channels.feeds.push(feed);
       watchedObject.channels.posts.unshift(...postsFromFeed);
       watchedObject.processState = 'SUCCESSFULLY';
-
-      return Promise.resolve({ url: useProxyTo(url), feedID: feed.id }); // for update
-    })
-    .then((response) => {
-      update(response, state, watchedObject, elements);
+      update(state, watchedObject);
     })
     .catch((err) => {
       watchedObject.error = i18Instance.t(`errors.${err.name}`);

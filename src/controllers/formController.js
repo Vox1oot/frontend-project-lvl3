@@ -13,8 +13,7 @@ export default (elements, state, watchedState, i18Instance) => {
       .then((url) => {
         watchedState.valid = true;
         watchedState.processState = 'SENDING';
-
-        getRequest(url, watchedState, elements, state, i18Instance);
+        getRequest(url, watchedState, state, i18Instance);
       })
       .catch((err) => {
         watchedState.valid = false;

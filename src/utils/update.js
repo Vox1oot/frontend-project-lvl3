@@ -2,17 +2,18 @@
 import uniqueId from 'lodash/uniqueId.js';
 import axios from 'axios';
 import parse from './parse.js';
+import useProxyTo from './useProxyTo.js';
 
 const getNewPosts = (coll1, coll2) => coll1
   .filter(({ title: title1 }) => !coll2.some(({ title: title2 }) => title1 === title2));
 
-const update = ({ url, feedID }, state, watchedObject, elements) => {
+const update = (state, watchedObject) => {
   const currentPosts = state.channels.posts;
+  const { url, id: feedID } = state.channels.feeds[state.channels.feeds.length - 1];
 
-  console.log(url);
-
+  console.log(currentPosts);
   setTimeout(() => {
-    axios(url)
+    axios({ url: useProxyTo(url) })
       .then((responce) => {
         const dataFromParse = parse(responce);
         const { posts: updatedPosts } = dataFromParse;
@@ -28,7 +29,7 @@ const update = ({ url, feedID }, state, watchedObject, elements) => {
           watchedObject.channels.posts.unshift(...newPostsFromFeed);
         }
       })
-      .finally(update({ url, feedID }, state, watchedObject, elements));
+      .finally(update(state, watchedObject));
   }, 5000);
 };
 
