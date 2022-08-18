@@ -1,9 +1,10 @@
-export default (elements, watchedObject) => {
-  const watcher = watchedObject;
-
+/* eslint-disable no-param-reassign */
+export default (elements, watchedState) => {
   elements.containerPosts.addEventListener('click', (e) => {
-    const { id } = e.target.dataset;
-    watcher.modalID = id;
-    watcher.visitedLinksIDs.add(id);
+    if (Object.hasOwn(e.target.dataset, 'id')) {
+      const { id } = e.target.dataset;
+      watchedState.modalID = id;
+      watchedState.visitedLinksIDs.add(id);
+    }
   });
 };

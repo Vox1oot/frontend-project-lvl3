@@ -5,7 +5,7 @@ import parse from './parse.js';
 import useProxyTo from './useProxyTo.js';
 import update from './update.js';
 
-export default (url, watchedObject, state, i18Instance) => {
+export default (url, watchedState, state) => (
   axios({ url: useProxyTo(url) })
     .then((responce) => {
       const { feed, posts } = parse(responce);
@@ -19,15 +19,13 @@ export default (url, watchedObject, state, i18Instance) => {
         return post;
       });
 
-      watchedObject.channels.feeds.push(feed);
-      watchedObject.channels.posts.unshift(...postsFromFeed);
-      watchedObject.processState = 'SUCCESSFULLY';
-      update(state, watchedObject);
+      watchedState.channels.feeds.push(feed);
+      watchedState.channels.posts.unshift(...postsFromFeed);
+      watchedState.processState = 'SUCCESSFULLY';
+      update(state, watchedState);
     })
     .catch((err) => {
-      watchedObject.error = i18Instance.t(`errors.${err.name}`);
-      watchedObject.processState = 'FILLING';
-      watchedObject.error = null;
-      throw err;
-    });
-};
+      watchedState.error = err.name;
+      watchedState.processState = 'FILLING';
+    })
+);

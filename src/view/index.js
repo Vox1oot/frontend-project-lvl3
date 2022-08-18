@@ -10,7 +10,7 @@ const render = (state, htmlElements, i18Instance) => {
   const watcher = onChange(state, (path, currentValue, prevValue) => {
     switch (path) {
       case 'error':
-        renderErrors(htmlElements, currentValue, prevValue);
+        renderErrors(htmlElements, currentValue, prevValue, i18Instance);
         break;
       case 'channels.feeds':
         renderFeeds(htmlElements, state.channels.feeds, i18Instance);
