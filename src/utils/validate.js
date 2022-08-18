@@ -7,16 +7,13 @@ export default (linkRSS, state) => {
     },
   });
 
+  const ulpoadedRSSLinks = state.channels.feeds.map((feed) => feed.url);
+
   const yupScheme = yup.object({
-    url: yup.string().url().notOneOf(state.channels.feeds.map((feed) => feed.url), 'RSSExist'),
+    url: yup.string().url().notOneOf(ulpoadedRSSLinks, 'RSSExist'),
   });
 
   return yupScheme
     .validate({ url: linkRSS }, { abortEarly: false })
-    .then(({ url }) => Promise.resolve(url))
-    .catch((err) => {
-      // eslint-disable-next-line no-param-reassign
-      state.error = null;
-      throw err;
-    });
+    .then(({ url }) => Promise.resolve(url));
 };

@@ -8,10 +8,7 @@ import update from './update.js';
 export default (url, watchedObject, state, i18Instance) => {
   axios({ url: useProxyTo(url) })
     .then((responce) => {
-      const dataFromParse = parse(responce);
-
-      const { feed } = dataFromParse;
-      const { posts } = dataFromParse;
+      const { feed, posts } = parse(responce);
 
       feed.id = uniqueId();
       feed.url = url;
