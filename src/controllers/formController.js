@@ -20,7 +20,7 @@ export default (elements, state, watchedState) => {
       })
       .catch((err) => {
         watchedState.valid = false;
-        watchedState.error = err.name;
+        watchedState.error = err.message;
       });
   });
 };
