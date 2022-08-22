@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import validate from '../utils/validate.js';
-import getRequest from '../utils/getRequest.js';
+import loadFeed from '../utils/loadFeed.js';
 
 export default (elements, state, watchedState) => {
   elements.form.addEventListener('submit', (e) => {
@@ -13,7 +13,7 @@ export default (elements, state, watchedState) => {
       .then((url) => {
         watchedState.valid = true;
         watchedState.processState = 'SENDING';
-        getRequest(url, watchedState, state)
+        loadFeed(url, watchedState, state)
           .then(() => {
             watchedState.error = null;
           });

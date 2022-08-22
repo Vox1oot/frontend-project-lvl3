@@ -4,7 +4,7 @@ export default (elements, watchedState) => {
     if (Object.hasOwn(e.target.dataset, 'id')) {
       const { id } = e.target.dataset;
       watchedState.modalID = id;
-      watchedState.visitedLinksIDs.add(id);
+      watchedState.uiState.visitedLinksIDs.add(id);
     }
   });
 };

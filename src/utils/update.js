@@ -2,7 +2,7 @@
 import uniqueId from 'lodash/uniqueId.js';
 import axios from 'axios';
 import parse from './parse.js';
-import useProxyTo from './useProxyTo.js';
+import proxify from './proxify.js';
 
 const getNewPosts = (coll1, coll2) => coll1
   .filter(({ title: title1 }) => !coll2.some(({ title: title2 }) => title1 === title2));
@@ -12,7 +12,7 @@ const update = (state, watchedObject) => {
   const { url, id: feedID } = state.channels.feeds[state.channels.feeds.length - 1];
 
   setTimeout(() => {
-    axios({ url: useProxyTo(url) })
+    axios({ url: proxify(url) })
       .then((responce) => {
         const dataFromParse = parse(responce);
         const { posts: updatedPosts } = dataFromParse;
