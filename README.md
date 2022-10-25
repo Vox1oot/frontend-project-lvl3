@@ -1,19 +1,19 @@
-### RSS-агрегатор — веб-приложение для автоматического сбора сообщений из источников, экспортирующих в форматы RSS, например: заголовки новостей, блогов, подкастов и видеохостингов.
+### SPA application for the aggregation of RSS feeds. The app receives a source as input, checks the source for updates every 5 seconds, and allows you to read each post as a short description, and a direct link to the specific post.
 
 
 [![Actions Status](https://github.com/Vox1oot/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Vox1oot/frontend-project-lvl3/actions)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0bc877fa117152120c0c/maintainability)](https://codeclimate.com/github/Vox1oot/frontend-project-lvl3/maintainability)
 [![Node CI](https://github.com/Vox1oot/frontend-project-lvl3/actions/workflows/nodejs.yml/badge.svg)](https://github.com/Vox1oot/frontend-project-lvl3/actions/workflows/nodejs.yml)
 
-### Кликните, чтобы перейти в приложение -> [RSS-aggregator](https://morsa-frontend-project-lvl3.vercel.app/)
+### Go to app -> [RSS-aggregator](https://morsa-frontend-project-lvl3.vercel.app/)
 
-### Принцип работы:
-Пользователь вводит в агрегатор адрес интересующего его источника. Далее агрегатор самостоятельно с интервалом в 5 секунд проверяет источник на наличие обновлений, и в случае их наличия добавляет обновление в список, и выводит на экран. После чего пользователь имеет возможность ознакомиться с обновлениями.
+### Principle of operation:
+The user enters the address of the source of interest into the aggregator. Then the aggregator itself checks the source for updates at 5-second intervals, and if they are available, adds the update to the list, and displays it on the screen. After that, the user has the opportunity to review the updates.
 
-### Руководство по установке:
+### Installation Guide:
 * ```$ git clone https://github.com/Vox1oot/frontend-project-lvl3.git```
 * ```make install```
 * ```make server```
-<b>- запуск webpack-dev-server для разработки</b>
+<b>- launch webpack-dev-server for development</b>
 * ```make build```
-<b>- сборка пакета</b>
+<b>- package assembly</b>
