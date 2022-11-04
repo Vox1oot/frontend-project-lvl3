@@ -1,4 +1,4 @@
-### SPA application for the aggregation of RSS feeds. The app receives a source as input, checks the source for updates every 5 seconds, and allows you to read each post as a short description, and a direct link to the specific post.
+### A SPA application for the aggregation of RSS feeds. The app receives a source as input, checks the source for updates every 5 seconds, and allows you to read each post as a short description, and a direct link to the specific post.
 
 
 [![Actions Status](https://github.com/Vox1oot/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Vox1oot/frontend-project-lvl3/actions)
